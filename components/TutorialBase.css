@@ -1,0 +1,24 @@
+.tutorial {
+    margin-left: 1em;
+}
+
+.tutorial-border {
+    border-left: thick solid skyblue;
+    padding-left: 1em;
+    padding-bottom: 10px;
+}
+
+.heading-input { 
+    display: block;
+    font-size: 2em;
+    margin-top: 0.67em;
+    margin-bottom: 0.67em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+    border: none;
+}
+
+.mce-edit-focus {
+    padding-top: 3em;
+}
