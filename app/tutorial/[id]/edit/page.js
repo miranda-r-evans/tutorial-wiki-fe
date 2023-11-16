@@ -1,16 +1,12 @@
 'use client'
 import axios from 'axios'
 import { Provider } from 'react-redux'
-import TutorialFetchWrapper from '@/components/TutorialFetchWrapper'
 import TutorialEditor from '@/components/TutorialEditor'
 import store from '@/features/store'
 
-
 export default function TutorialEdit ({ params }) {
   return <Provider store={store}>
-  <TutorialFetchWrapper id={params.id}>
   <TutorialEditor id={params.id}/>
-  </TutorialFetchWrapper>
     <button onClick={async () => {
       const data = {
         tutorials: store.getState().tutorials.entities

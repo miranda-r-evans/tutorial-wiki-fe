@@ -1,27 +1,31 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchTutorial } from '@/features/tutorial/tutorialSlice'
+import { fetchTutorial, selectTutorialById } from '@/features/tutorial/tutorialSlice'
 
 export default function TutorialFetchWrapper ({ children, id }) {
-  const dispatch = useDispatch()
+  const tutorialData = useSelector(state => {
+    return selectTutorialById(state, id)
+  })
 
-  const tutorialStatus = useSelector(state => state.tutorials.status)
+  const dispatch = useDispatch()
 
   let content
 
-  if (tutorialStatus === 'loading') {
+  if (!tutorialData) {
     content = <></>
-  } else if (tutorialStatus === 'succeeded') {
-    content = <>{children}</>
-  } else if (tutorialStatus === 'failed') {
+  } else if (tutorialData.status === 'loading') {
+    content = <></>
+  } else if (tutorialData.status === 'failed') {
     content = <div>error</div>
+  } else if (tutorialData.status === 'succeeded') {
+    content = <>{children}</>
   }
 
   useEffect(() => {
-    if (tutorialStatus === 'idle') {
+    if (!tutorialData) {
       dispatch(fetchTutorial(id))
     }
-  }, [tutorialStatus, dispatch])
+  }, [tutorialData, dispatch])
 
   return content
 }

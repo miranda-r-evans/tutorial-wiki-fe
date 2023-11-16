@@ -1,14 +1,25 @@
 'use client'
 
 import { useRef } from 'react'
-import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import './TutorialBase.css'
-import { updateTutorial, updateMultipleTutorials, selectTutorialById } from '@/features/tutorial/tutorialSlice'
+import { updateTutorial, selectTutorialById } from '@/features/tutorial/tutorialSlice'
 import { TUTORIAL, TEXT, newSectionTemplate } from '@/util/tutorial'
+import TutorialFetchWrapper from './TutorialFetchWrapper'
 import TextEditor from './TextEditor'
 
 export default function TutorialEditor ({
+  id,
+  removeCurrentSection = false
+}) {
+  return (
+  <TutorialFetchWrapper id={id}>
+    <TutorialEditorMain id={id} removeCurrentSection={removeCurrentSection} />
+  </TutorialFetchWrapper>
+  )
+}
+
+function TutorialEditorMain ({
   id,
   removeCurrentSection = false
 }) {
@@ -33,24 +44,20 @@ export default function TutorialEditor ({
   }
 
   const insertSection = (firstText, secondText, toInsert, childKey) => {
+    let newId
     if (toInsert) {
-      axios.get(`http://localhost:5050/tutorial/${toInsert}`)
-        .then(res => insertAndDispatch(firstText, secondText, toInsert, childKey, res.data))
-      // todo handle error
+      newId = toInsert
     } else {
       const newTutorial = newSectionTemplate(TUTORIAL)
-      insertAndDispatch(firstText, secondText, newTutorial.id, childKey, [newTutorial])
+      dispatch(updateTutorial(newTutorial))
+      newId = newTutorial.id
     }
-  }
-
-  const insertAndDispatch = (firstText, secondText, newId, childKey, tutorialArray) => {
     const tutorial = JSON.parse(JSON.stringify(tutorialRef.current))
     const idx = tutorial.sections.findIndex((c) => c.id === childKey)
     tutorial.sections.splice(idx, 1, newSectionTemplate(TEXT, { value: firstText }))
     tutorial.sections.splice(idx + 1, 0, { type: TUTORIAL, id: newId })
     tutorial.sections.splice(idx + 2, 0, newSectionTemplate(TEXT, { value: secondText }))
-    tutorialArray.push(tutorial)
-    dispatch(updateMultipleTutorials(tutorialArray))
+    dispatch(updateTutorial(tutorial))
     tutorialRef.current = tutorial
   }
 

@@ -1,13 +1,23 @@
 import './TutorialBase.css'
 import { useSelector } from 'react-redux'
 import { selectTutorialById } from '@/features/tutorial/tutorialSlice'
+import TutorialFetchWrapper from './TutorialFetchWrapper'
 
-export default function TutorialBase ({id}) {
+export default function TutorialBase ({ id }) {
+  return (
+    <TutorialFetchWrapper id={id}>
+      <TutorialBaseMain id={id} />
+    </TutorialFetchWrapper>
+  )
+}
+
+function TutorialBaseMain ({ id }) {
   const tutorial = useSelector(state => {
     return selectTutorialById(state, id)
   })
 
-  return <div className='tutorial'>
+  return (
+  <div className='tutorial'>
     <div className='tutorial-border'>
     <h1>{tutorial.heading}</h1>
     <div>
@@ -20,4 +30,5 @@ export default function TutorialBase ({id}) {
     </div>
     </div>
 </div>
+  )
 }

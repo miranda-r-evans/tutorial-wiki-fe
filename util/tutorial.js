@@ -13,7 +13,8 @@ export const newSectionTemplate = (type, custom = {}) => {
         id: Math.random(),
         isNew: true,
         heading: '',
-        sections: [newSectionTemplate(TEXT)]
+        sections: [newSectionTemplate(TEXT)],
+        status: 'succeeded'
       })
     case TEXT:
       return _.defaults(custom, {

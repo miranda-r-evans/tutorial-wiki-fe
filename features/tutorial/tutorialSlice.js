@@ -4,8 +4,6 @@ import axios from 'axios'
 export const tutorialAdapter = createEntityAdapter()
 
 const initialState = tutorialAdapter.getInitialState({
-  status: 'idle',
-  error: null
 })
 
 export const fetchTutorial = createAsyncThunk('tutorial/fetchTutorial', async (id) => {
@@ -19,23 +17,21 @@ export const tutorialSlice = createSlice({
   reducers: {
     updateTutorial: (state, action) => {
       tutorialAdapter.upsertOne(state, action.payload)
-    },
-    updateMultipleTutorials: (state, action) => {
-      tutorialAdapter.upsertMany(state, action.payload)
     }
   },
   extraReducers (builder) {
     builder
       .addCase(fetchTutorial.pending, (state, action) => {
-        state.status = 'loading'
+        tutorialAdapter.upsertOne(state, { id: action.meta.arg, status: 'loading' })
       })
       .addCase(fetchTutorial.fulfilled, (state, action) => {
-        state.status = 'succeeded'
+        action.payload.data.forEach(e => {
+          e.status = 'succeeded'
+        })
         tutorialAdapter.upsertMany(state, action.payload.data)
       })
       .addCase(fetchTutorial.rejected, (state, action) => {
-        state.status = 'failed'
-        state.error = action.error.message
+        tutorialAdapter.upsertOne(state, { id: action.meta.arg, status: 'failed' })
       })
   }
 }
@@ -43,6 +39,6 @@ export const tutorialSlice = createSlice({
 
 export const { selectById: selectTutorialById } = tutorialAdapter.getSelectors(state => state.tutorials)
 
-export const { updateTutorial, updateMultipleTutorials } = tutorialSlice.actions
+export const { updateTutorial } = tutorialSlice.actions
 
 export default tutorialSlice.reducer
