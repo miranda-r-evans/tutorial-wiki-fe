@@ -1,4 +1,10 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Overview
+
+When following a tutorial, it is easy to miss information that the writer assumes you already know, get lost in a sea of tabs when looking things up, and to lose context. Tutorial Wiki is an attempt to solve those problems by enabling modular use of tutorials by embedding them directly into other pages, rather than just hyperlinking.
+
+The front end uses React, Redux, Next, and TinyMCE. It relies on a back end service in the tutorial-service repo, which uses Node, Express, PostgreSQL, and Docker.
+
+https://www.youtube.com/watch?v=lJgLlJ4gj80&ab_channel=MirandaEvans
 
 ## Getting Started
 
