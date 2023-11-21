@@ -15,7 +15,6 @@ function TextEditor ({
   const cursorHTML = '<span class="cursor"></span>'
 
   return (
-        <div>
 <Editor
 tinymceScriptSrc={process.env.PUBLIC_URL + '/tinymce/tinymce.min.js'}
 onInit={(_, editor) => editorRef.current = editor}
@@ -78,7 +77,6 @@ init={{
   }
 }}
 />
-</div>
   )
 }
 

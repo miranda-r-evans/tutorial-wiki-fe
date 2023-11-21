@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { Fragment, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import './TutorialBase.css'
 import { updateTutorial, selectTutorialById } from '@/features/tutorial/tutorialSlice'
@@ -84,7 +84,7 @@ function TutorialEditorMain ({
               tutorialRef.current = tutorial
             }} />
             {tutorialRef.current.sections.map((c) =>
-                <div key={c.id}>
+                <Fragment key={c.id}>
                     {c.type === TUTORIAL &&
                     <TutorialEditor
                     removeCurrentSection={() => deleteChildSection(c.id)}
@@ -99,12 +99,15 @@ function TutorialEditorMain ({
                     onGetEditorContent={(t) => getEditorContent(t, c.id)}
                     />
                     }
-                </div>
+                </Fragment>
             )}
             </div>
         {removeCurrentSection &&
-            <button onClick={() => { removeCurrentSection() }}>Delete This Section</button>
-        }
+            <button
+            className='delete-section-button'
+            onClick={() => { removeCurrentSection() }}>
+            Delete This Section
+            </button>}
         </div>
   )
 }

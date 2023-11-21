@@ -7,7 +7,9 @@ import store from '@/features/store'
 export default function TutorialEdit ({ params }) {
   return <Provider store={store}>
   <TutorialEditor id={params.id}/>
-    <button onClick={async () => {
+    <button
+    id='save_tutorial_button'
+    onClick={async () => {
       const data = {
         tutorials: store.getState().tutorials.entities
       }

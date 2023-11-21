@@ -1,4 +1,5 @@
 import './TutorialBase.css'
+import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import { selectTutorialById } from '@/features/tutorial/tutorialSlice'
 import TutorialFetchWrapper from './TutorialFetchWrapper'
@@ -20,14 +21,12 @@ function TutorialBaseMain ({ id }) {
   <div className='tutorial'>
     <div className='tutorial-border'>
     <h1>{tutorial.heading}</h1>
-    <div>
     {tutorial.sections.map((c) =>
-        <div key={c.id}>
-            {c.type === 'text' && <div dangerouslySetInnerHTML={{ __html: c.value }} />}
-            {c.type === 'tutorial' && <TutorialBase id={c.id}/>}
-        </div>
+      <Fragment key={c.id}>
+          {c.type === 'text' && <div dangerouslySetInnerHTML={{ __html: c.value }} />}
+          {c.type === 'tutorial' && <TutorialBase id={c.id}/>}
+      </Fragment>
     )}
-    </div>
     </div>
 </div>
   )

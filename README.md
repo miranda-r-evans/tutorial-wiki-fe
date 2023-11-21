@@ -16,8 +16,15 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Testing
+
+Start development server, and then run:
+```bash
+npm cypress open
+```
+
 ## TODO:
-- Add testing.
+- Test file drag and drop.
 - Disable editing a tutorial from a page that does not correspond to the tutorial or its top level parent.
 - Enable creation of an editable tutorial copy.
 - Disable embedding a tutorial that would create a loop.
@@ -26,6 +33,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - Add preveiw in edit and create.
 - Redirect to finished page on save.
 - Add a button to copy a section id for embedding.
-- Generate fake ids for fetched text sections and remove ids from new text sections when sending to server.
+- Remove text ids and other unnecessary fields when sending to server.
 - \(Possibly create new text sections where appropriate if one is not present, but this shouldn't be an issue in normal usage.\)
 - Create error pop up.

@@ -1,5 +1,6 @@
 import { createSlice, createEntityAdapter, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { TUTORIAL, newSectionTemplate } from '@/util/tutorial'
 
 export const tutorialAdapter = createEntityAdapter()
 
@@ -25,10 +26,13 @@ export const tutorialSlice = createSlice({
         tutorialAdapter.upsertOne(state, { id: action.meta.arg, status: 'loading' })
       })
       .addCase(fetchTutorial.fulfilled, (state, action) => {
-        action.payload.data.forEach(e => {
-          e.status = 'succeeded'
+        const tutorials = action.payload.data
+        tutorials.forEach(e => {
+          for (let i = 0; i < tutorials.length; i++) {
+            tutorials[i] = newSectionTemplate(TUTORIAL, tutorials[i])
+          }
         })
-        tutorialAdapter.upsertMany(state, action.payload.data)
+        tutorialAdapter.upsertMany(state, tutorials)
       })
       .addCase(fetchTutorial.rejected, (state, action) => {
         tutorialAdapter.upsertOne(state, { id: action.meta.arg, status: 'failed' })

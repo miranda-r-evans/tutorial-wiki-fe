@@ -13,7 +13,9 @@ export default function TutorialCreate () {
 
   return <Provider store={store}>
       <TutorialEditor id={rootId} />
-    <button onClick={() => {
+    <button
+    id='save_tutorial_button'
+    onClick={() => {
       const data = {
         tutorials: store.getState().tutorials.entities,
         rootId
