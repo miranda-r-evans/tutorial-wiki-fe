@@ -7,6 +7,9 @@ const sectionTypes = {
 export const { TUTORIAL, TEXT } = sectionTypes
 
 export const newSectionTemplate = (type, custom = {}) => {
+  if (custom.id && !(custom.isNew)) {
+    custom.isNew = false
+  }
   if (custom.sections) {
     for (let i = 0; i < custom.sections.length; i++) {
       if (custom.sections[i].type === TEXT) {
