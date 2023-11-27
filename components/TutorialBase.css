@@ -1,8 +1,14 @@
-.tutorial {
-    margin-left: 1em;
+.section {
+    margin-bottom: 1em;
 }
 
-.tutorial-border {
+.tutorial {
+    display: flex;
+    flex-direction: row;
+}
+
+.tutorial-border{
+    margin-left: 1em;
     border-left: thick solid skyblue;
     padding-left: 1em;
     padding-bottom: 10px;
@@ -17,6 +23,10 @@
     margin-right: 0;
     font-weight: bold;
     border: none;
+}
+
+.heading-input-collapsed { 
+    font-size: 1.5em !important;
 }
 
 .mce-edit-focus {

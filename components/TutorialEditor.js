@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment, useRef } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import './TutorialBase.css'
 import { updateTutorial, selectTutorialById } from '@/features/tutorial/tutorialSlice'
@@ -23,6 +23,8 @@ function TutorialEditorMain ({
   id,
   removeCurrentSection = false
 }) {
+  const [collapsed, setCollapsed] = useState(false)
+
   const dispatch = useDispatch()
 
   const tutorialData = useSelector(state => {
@@ -70,10 +72,15 @@ function TutorialEditorMain ({
   }
 
   return (
+    <div className='section'>
         <div className='tutorial'>
-            <div className='tutorial-border'>
+         <div
+         className='tutorial-border'
+         onClick={() => setCollapsed(!collapsed)}
+        />
+         <div>
             <input
-            className='heading-input'
+            className={collapsed ? 'heading-input heading-input-collapsed' : 'heading-input'}
             type='text'
             placeholder='Type a heading'
             value={tutorialRef.current.heading}
@@ -83,6 +90,7 @@ function TutorialEditorMain ({
               dispatch(updateTutorial(tutorial))
               tutorialRef.current = tutorial
             }} />
+            <div hidden={collapsed}>
             {tutorialRef.current.sections.map((c) =>
                 <Fragment key={c.id}>
                     {c.type === TUTORIAL &&
@@ -102,6 +110,8 @@ function TutorialEditorMain ({
                 </Fragment>
             )}
             </div>
+            </div>
+            </div>
         {removeCurrentSection &&
             <button
             className='delete-section-button'
@@ -111,4 +121,3 @@ function TutorialEditorMain ({
         </div>
   )
 }
-

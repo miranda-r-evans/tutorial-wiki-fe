@@ -35,7 +35,6 @@ npm cypress open
 - Enable creation of an editable tutorial copy.
 - Disable embedding a tutorial that would create a loop.
 - Add responsive design.
-- Make sections collapsible.
 - Add preveiw in edit and create.
 - Redirect to finished page on save.
 - Add a button to copy a section id for embedding.
