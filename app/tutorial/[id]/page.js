@@ -2,9 +2,15 @@
 import TutorialBase from '@/components/TutorialBase'
 import store from '@/features/store'
 import { Provider } from 'react-redux'
+import { ThemeProvider } from '@mui/material'
+import theme from '@/materialUI/theme'
 
 export default function Tutorial ({ params }) {
-  return <Provider store={store}>
-  <TutorialBase id={params.id} />
+  return (
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <TutorialBase id={params.id} />
+    </ThemeProvider>
   </Provider>
+  )
 }

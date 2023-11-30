@@ -1,8 +1,7 @@
 'use client'
-
 import { Fragment, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import './TutorialBase.css'
+import {Accordion, AccordionSummary, AccordionDetails, Input, Button} from '@mui/material'
 import { updateTutorial, selectTutorialById } from '@/features/tutorial/tutorialSlice'
 import { TUTORIAL, TEXT, newSectionTemplate } from '@/util/tutorial'
 import TutorialFetchWrapper from './TutorialFetchWrapper'
@@ -23,7 +22,7 @@ function TutorialEditorMain ({
   id,
   removeCurrentSection = false
 }) {
-  const [collapsed, setCollapsed] = useState(false)
+  const [expand, setExpand] = useState(true)
 
   const dispatch = useDispatch()
 
@@ -73,51 +72,47 @@ function TutorialEditorMain ({
 
   return (
     <div className='section'>
-        <div className='tutorial'>
-         <div
-         className='tutorial-border'
-         onClick={() => setCollapsed(!collapsed)}
-        />
-         <div>
-            <input
-            className={collapsed ? 'heading-input heading-input-collapsed' : 'heading-input'}
-            type='text'
-            placeholder='Type a heading'
-            value={tutorialRef.current.heading}
-            onChange={(e) => {
-              const tutorial = JSON.parse(JSON.stringify(tutorialRef.current))
-              tutorial.heading = e.target.value
-              dispatch(updateTutorial(tutorial))
-              tutorialRef.current = tutorial
-            }} />
-            <div hidden={collapsed}>
+      <div className='tutorial'>
+        <div className='tutorial-border' onClick={() => setExpand(!expand)}>
+          <div/>
+        </div>
+        <Accordion expanded={expand}>
+          <AccordionSummary>
+            <Input
+              value={tutorialRef.current.heading}
+              placeholder='Type a heading'
+              inputProps={{ 'aria-label': 'tutorial heading input' }}
+            />
+          </AccordionSummary>
+          <AccordionDetails>
             {tutorialRef.current.sections.map((c) =>
-                <Fragment key={c.id}>
-                    {c.type === TUTORIAL &&
-                    <TutorialEditor
+              <Fragment key={c.id}>
+                {c.type === TUTORIAL &&
+                  <TutorialEditor
                     removeCurrentSection={() => deleteChildSection(c.id)}
                     id={c.id}
-                    />}
-
-                    {c.type === TEXT &&
-                    <TextEditor
+                  />
+                }
+                {c.type === TEXT &&
+                  <TextEditor
                     value={c.value}
                     createSection={((f, s) => insertSection(f, s, false, c.id))}
                     embedSection={(f, s, tid) => insertSection(f, s, tid, c.id)}
                     onGetEditorContent={(t) => getEditorContent(t, c.id)}
-                    />
-                    }
-                </Fragment>
+                  />
+                }
+              </Fragment>
             )}
-            </div>
-            </div>
-            </div>
+          </AccordionDetails>
+        </Accordion>
+      </div>
         {removeCurrentSection &&
-            <button
+          <Button
             className='delete-section-button'
+            variant="outlined"
             onClick={() => { removeCurrentSection() }}>
             Delete This Section
-            </button>}
-        </div>
+          </Button>}
+    </div>
   )
 }

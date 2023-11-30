@@ -30,6 +30,7 @@ npm cypress open
 ```
 
 ## TODO:
+- Add unit testing
 - Test file drag and drop.
 - Disable editing a tutorial from a page that does not correspond to the tutorial or its top level parent.
 - Enable creation of an editable tutorial copy.
@@ -41,3 +42,7 @@ npm cypress open
 - Remove text ids and other unnecessary fields when sending to server.
 - \(Possibly create new text sections where appropriate if one is not present, but this shouldn't be an issue in normal usage.\)
 - Create error pop up.
+- Fix issue where a user needs to click off of the text editor before clicking save button
+- Fix data possibly getting removed from state after being sent to server.
+- Undo button after deleting a section.
+- Add loading icon for text editor.
