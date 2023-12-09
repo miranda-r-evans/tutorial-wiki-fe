@@ -2,7 +2,7 @@ import { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { selectTutorialById } from '@/features/tutorial/tutorialSlice'
 import TutorialFetchWrapper from './TutorialFetchWrapper'
-import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
+import { Accordion, AccordionSummary, AccordionDetails, Box } from '@mui/material'
 
 export default function TutorialBase ({ id }) {
   return (
@@ -20,14 +20,18 @@ function TutorialBaseMain ({ id }) {
   })
 
   return (
-    <div className='section'>
-      <div className='tutorial'>
-        <div className='tutorial-border' onClick={() => setExpand(!expand)}>
-          <div/>
-        </div>
-        <Accordion expanded={expand}>
+    <Box
+      className='tutorial'
+      sx={{ display: 'flex', flexDirection: 'row', marginTop: 1, marginBotton: 1 }}
+    >
+      <Box
+        className='tutorial-border'
+        sx={{ borderRight: 16, borderColor: 'white', bgcolor: 'info.main', width: 20 }}
+        onClick={() => setExpand(!expand)}
+      />
+        <Accordion expanded={expand} sx={{ width: '100%', '& .Mui-expanded': { '& .tutorial-heading': { fontSize: '2rem' } } }}>
           <AccordionSummary>
-            <h1>{tutorial.heading}</h1>
+            <h2 className='tutorial-heading'>{tutorial.heading}</h2>
           </AccordionSummary>
           <AccordionDetails>
             {tutorial.sections.map((c) =>
@@ -38,7 +42,6 @@ function TutorialBaseMain ({ id }) {
             )}
           </AccordionDetails>
         </Accordion>
-      </div>
-    </div>
+      </Box>
   )
 }

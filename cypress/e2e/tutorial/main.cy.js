@@ -4,65 +4,36 @@ describe('/tutorial/main', () => {
 
     cy.intercept('GET', baseUrl + '3', { fixture: 'tutorial3.json' })
 
-    cy.intercept('GET', baseUrl + 'invalid', { fixture: 'tutorialInvalid.json' })
+    cy.intercept('GET', baseUrl + 'invalid', { statusCode: 404, body: 'a tutorial could not be added' })
 
-    cy.intercept('GET', 'http://localhost:5050/tutorial/3', [
-      {
-        id: 3,
-        heading: 'embedded heading 3',
-        sections: [
-          {
-            type: 'text',
-            value: '<p>embedded paragraph 3</p>'
-          },
-          {
-            type: 'tutorial',
-            id: 4
-          },
-          {
-            type: 'text',
-            value: ''
-          }
-        ],
-        is_top_level: null,
-        top_parent: null,
-        createdAt: '2023-11-07T05:24:23.918Z',
-        updatedAt: '2023-11-10T05:39:10.612Z'
-      },
-      {
-        id: 4,
-        heading: 'embedded heading 4',
-        sections: [
-          {
-            type: 'text',
-            value: '<p>embedded paragraph 4</p>'
-          }
-        ],
-        is_top_level: null,
-        top_parent: null,
-        createdAt: '2023-11-07T05:24:23.918Z',
-        updatedAt: '2023-11-10T05:39:10.612Z'
-      }
-    ]
-    )
-
-    cy.intercept('GET', 'http://localhost:5050/tutorial/invalid', { statusCode: 404, body: 'a tutorial could not be added' }
-    )
+    cy.visit('http://localhost:3000/tutorial/3')
   })
 
-  it('should display display the word "error" if the URL id is invalid', () => {
+  it('should display an error pop up if the URL id is invalid', () => {
     cy.visit('http://localhost:3000/tutorial/invalid')
 
-    cy.contains('error').should('have.length', 1)
+    cy.get('.error-popup').should('have.class', 'MuiModal-root')
+    cy.get('.error-popup').find('h2').should('have.text', 'There was a problem saving your tutorial.')
   })
 
   it('should display heading, text, and nested tutorials', () => {
-    cy.visit('http://localhost:3000/tutorial/3')
+    cy.get('.tutorial h2:first').should('have.text', 'embedded heading 3')
+    cy.get('.tutorial p:first').should('have.text', 'embedded paragraph 3')
 
-    cy.get('div[class=tutorial] h1:first').should('have.text', 'embedded heading 3')
-    cy.get('div[class=tutorial] p:first').should('have.text', 'embedded paragraph 3')
+    cy.get('.tutorial .tutorial h2').should('have.text', 'embedded heading 4')
+    cy.get('.tutorial .tutorial p').should('have.text', 'embedded paragraph 4')
+  })
 
-    cy.get('div[class=tutorial] div[class=tutorial] h1').should('have.text', 'embedded heading 4')
-    cy.get('div[class=tutorial] div[class=tutorial] p').should('have.text', 'embedded paragraph 4')
+  it('should hide accordion details when the tutorial border is clicked', () => {
+    cy.get('.MuiAccordionDetails-root').should('not.have.css', 'visibility', 'hidden')
+    cy.get('h2:first').should('have.css', 'font-size', '32px')
+
+    cy.get('.tutorial-border:first').click()
+    cy.get('.MuiAccordionDetails-root:first').should('have.css', 'visibility', 'hidden')
+    cy.get('h2:first').should('have.css', 'font-size', '24px')
+
+    cy.get('.tutorial-border:first').click()
+    cy.get('.MuiAccordionDetails-root:first').should('not.have.css', 'visibility', 'hidden')
+    cy.get('h2:first').should('have.css', 'font-size', '32px')
   })
 })

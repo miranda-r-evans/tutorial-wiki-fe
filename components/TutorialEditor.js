@@ -1,11 +1,12 @@
 'use client'
 import { Fragment, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import {Accordion, AccordionSummary, AccordionDetails, Input, Button} from '@mui/material'
-import { updateTutorial, selectTutorialById } from '@/features/tutorial/tutorialSlice'
+import { Accordion, AccordionSummary, AccordionDetails, Input, Button, Box } from '@mui/material'
+import { updateTutorial, selectTutorialById, fetchTutorial } from '@/features/tutorial/tutorialSlice'
 import { TUTORIAL, TEXT, newSectionTemplate } from '@/util/tutorial'
 import TutorialFetchWrapper from './TutorialFetchWrapper'
 import TextEditor from './TextEditor'
+import ErrorPopUp from '@/components/ErrorPopUp'
 
 export default function TutorialEditor ({
   id,
@@ -23,6 +24,8 @@ function TutorialEditorMain ({
   removeCurrentSection = false
 }) {
   const [expand, setExpand] = useState(true)
+
+  const [saveError, setSaveError] = useState(false)
 
   const dispatch = useDispatch()
 
@@ -46,20 +49,30 @@ function TutorialEditorMain ({
 
   const insertSection = (firstText, secondText, toInsert, childKey) => {
     let newId
+    const insert = () => {
+      const tutorial = JSON.parse(JSON.stringify(tutorialRef.current))
+      const idx = tutorial.sections.findIndex((c) => c.id === childKey)
+      tutorial.sections.splice(idx, 1, newSectionTemplate(TEXT, { value: firstText }))
+      tutorial.sections.splice(idx + 1, 0, { type: TUTORIAL, id: newId })
+      tutorial.sections.splice(idx + 2, 0, newSectionTemplate(TEXT, { value: secondText }))
+      dispatch(updateTutorial(tutorial))
+      tutorialRef.current = tutorial
+    }
     if (toInsert) {
       newId = toInsert
+      dispatch(fetchTutorial(toInsert)).then(thunk => {
+        if (thunk.error) {
+          setSaveError(true)
+        } else {
+          insert()
+        }
+      })
     } else {
       const newTutorial = newSectionTemplate(TUTORIAL)
-      dispatch(updateTutorial(newTutorial))
       newId = newTutorial.id
+      dispatch(updateTutorial(newTutorial))
+      insert()
     }
-    const tutorial = JSON.parse(JSON.stringify(tutorialRef.current))
-    const idx = tutorial.sections.findIndex((c) => c.id === childKey)
-    tutorial.sections.splice(idx, 1, newSectionTemplate(TEXT, { value: firstText }))
-    tutorial.sections.splice(idx + 1, 0, { type: TUTORIAL, id: newId })
-    tutorial.sections.splice(idx + 2, 0, newSectionTemplate(TEXT, { value: secondText }))
-    dispatch(updateTutorial(tutorial))
-    tutorialRef.current = tutorial
   }
 
   const getEditorContent = (text, childKey) => {
@@ -71,17 +84,30 @@ function TutorialEditorMain ({
   }
 
   return (
-    <div className='section'>
-      <div className='tutorial'>
-        <div className='tutorial-border' onClick={() => setExpand(!expand)}>
-          <div/>
-        </div>
-        <Accordion expanded={expand}>
+    <>
+    <Box
+      className='tutorial'
+      sx={{ display: 'flex', flexDirection: 'row', marginTop: 1, marginBotton: 1 }}
+    >
+      <Box
+        className='tutorial-border'
+        sx={{ borderRight: 16, borderColor: 'white', bgcolor: 'info.main', width: 20 }}
+        onClick={() => setExpand(!expand)}
+      />
+        <Accordion expanded={expand} sx={{ width: '100%', '& .Mui-expanded': { '& .heading-input': { fontSize: '2rem' } } }}>
           <AccordionSummary>
             <Input
+            className='heading-input'
+            sx={{ fontSize: '1.5rem' }}
               value={tutorialRef.current.heading}
               placeholder='Type a heading'
               inputProps={{ 'aria-label': 'tutorial heading input' }}
+              onChange={(e) => {
+                const tutorial = JSON.parse(JSON.stringify(tutorialRef.current))
+                tutorial.heading = e.target.value
+                dispatch(updateTutorial(tutorial))
+                tutorialRef.current = tutorial
+              }}
             />
           </AccordionSummary>
           <AccordionDetails>
@@ -105,14 +131,16 @@ function TutorialEditorMain ({
             )}
           </AccordionDetails>
         </Accordion>
-      </div>
+      </Box>
         {removeCurrentSection &&
           <Button
+            sx={{ marginBottom: 1 }}
             className='delete-section-button'
             variant="outlined"
             onClick={() => { removeCurrentSection() }}>
             Delete This Section
           </Button>}
-    </div>
+      <ErrorPopUp saveError={saveError} onClose={() => setSaveError(false)} />
+    </>
   )
 }

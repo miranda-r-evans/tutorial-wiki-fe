@@ -3,12 +3,13 @@ import { Modal, Typography, Box } from '@mui/material'
 export default function ErrorPopUp ({ saveError, onClose }) {
   return (
     <Modal
+      className='error-popup'
       open={saveError}
       onClose={() => onClose()}
       aria-labelledby="error-modal-title"
       aria-describedby="error-modal-description"
     >
-      <Box className='error-popup-box'
+      <Box
         sx={{
           position: 'absolute',
           top: '50%',
